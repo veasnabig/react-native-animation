@@ -12,6 +12,7 @@ import AnimatedParallel from './Animated/AnimateParallel.js';
 import AnimatedFlip from './Animated/AnimatedFlip.js';
 import AnimatedScrollView from './Animated/AnimatedScrollView.js';
 import Header from './Animated/Header/index.js';
+import ScrollHeader from './Animated/ScrollHeader/index.js';
 
 export default class App extends React.Component {
   render() {

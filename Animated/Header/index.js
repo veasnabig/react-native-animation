@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Animated, TouchableOpacity, ScrollView, TextInput,Easing } from 'react-native';
+import { StyleSheet, Text, View, Animated, TouchableOpacity, ScrollView, TextInput, Easing } from 'react-native';
 
 import styles from './styles.js';
 import { Layout, FontSizes } from './constant.js';
@@ -23,7 +23,6 @@ export default class header extends React.Component {
         currentOffsetY: new Animated.Value(0)
     };
     _onScroll(event) {
-        // this.setState({ currentOffsetY: event.nativeEvent.contentOffset.y });
         Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
             { onScroll: this.props.onScroll }
@@ -47,6 +46,16 @@ export default class header extends React.Component {
             outputRange: [0, 1],
             extrapolate: 'clamp'
         })
+        const appBarTitleCenter = this.state.scrollY.interpolate({
+            inputRange: [0, Layout.header - Layout.appBarHeight],
+            outputRange: [-10, 0],
+            extrapolate: 'clamp'
+        })
+        const appBarTitleCenterColor = this.state.scrollY.interpolate({
+            inputRange: [0, Layout.header - Layout.appBarHeight],
+            outputRange: ["#fff", "#000"],
+            extrapolate: 'clamp'
+        })
         const animatedStyle = {
             transform: [{ scale: this.animatedVlaue }]
         }
@@ -67,14 +76,16 @@ export default class header extends React.Component {
                             <Text style={{ fontSize: FontSizes.smallTitle }}>SmallTitle</Text>
                         </View>
                     </View>
-                    <View style={styles.appBarTitleCenter}>
+                    <Animated.View style={[styles.appBarTitleCenter, { bottom: appBarTitleCenter }]}>
                         <Animated.Text style={{
                             fontSize: FontSizes.smallTitle,
-                            transform: [{ scale }]
+                            color: appBarTitleCenterColor
+                            // transform: [{ scale }]
                         }}>
+                            {this.state.largeTitle}
                             {/* {this.state.currentOffsetY > 30 ? this.state.largeTitle : ""} */}
                         </Animated.Text>
-                    </View>
+                    </Animated.View>
                     <View style={styles.appBarIconRight}>
                     </View>
                 </View>
@@ -82,7 +93,12 @@ export default class header extends React.Component {
                     contentContainerStyle={{ marginTop: 130, paddingBottom: 130 }}
                     style={{ flex: 1, backgroundColor: '#fff' }}
                     scrollEventThrottle={16}
-                    onScroll={this._onScroll.bind(this)}
+                    onScroll={
+                        Animated.event(
+                            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }]
+                        )
+                    }
+                    // onScroll={this._onScroll.bind(this)}
                 >
                     {this._renderList()}
                 </Animated.ScrollView>
